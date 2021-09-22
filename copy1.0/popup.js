@@ -50,11 +50,6 @@ window.onload = async () => {
       if(hideBox){
         hideBox.style.display = 'none'
       }
-
-      const hideBox = document.querySelector('.hide-article-box')
-      if(hideBox){
-        hideBox.style.display = 'none'
-      }
     })
   })
 }
