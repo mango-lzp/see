@@ -23,6 +23,12 @@ window.onload = async () => {
       window.addEventListener('keydown', function(event) {
         event.stopImmediatePropagation()
       }, true)
+
+      // 移除百度文库的广告
+      if(window.location.href.includes('baidu')){
+        document.querySelectorAll('.hx-warp').forEach(ad => ad.style.display = 'none')
+        document.querySelectorAll('.hx-recom-wrapper').forEach(ad => ad.style.display = 'none')
+      }
       
       // 移除code、pre userSelect为none
       const setUserSelect = (node) => window.getComputedStyle(node).userSelect === 'none' && (node.style.userSelect = 'auto')
@@ -40,6 +46,11 @@ window.onload = async () => {
         content.style.height = 'unset'
       }
       // 移除底部讨厌的关注后阅读
+      const hideBox = document.querySelector('.hide-article-box')
+      if(hideBox){
+        hideBox.style.display = 'none'
+      }
+
       const hideBox = document.querySelector('.hide-article-box')
       if(hideBox){
         hideBox.style.display = 'none'
