@@ -2,7 +2,7 @@
 google-extension
 
 ### csdn
-点击clear可以复制code代码
+点击clear可以复制code代码  
 点击read-all可以取消 关注阅读全文的限制
 
 ### 百度文库
