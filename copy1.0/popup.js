@@ -1,25 +1,6 @@
-const doCopy = () => {
-  const setUserSelect = (e) => {
-    let current = e.target
-    while(current.parentNode && current.nodeName !== 'DIV' && current !== document.body){
-      current.style.userSelect = 'auto'
-      current = current.parentNode
-      console.log('set user select')
-    }
-    document.removeEventListener('click', setUserSelect)
-  }
-
-  const isChosen = window.getSelection ? window.getSelection().type === 'Range' : document.selection.createRange().text
-  ;(window.getSelection && console.log(window.getSelection()))
-  if(isChosen){
-    document.execCommand('copy')
-  } else {
-   document.addEventListener('click', setUserSelect)
-  }
-}
-
 window.onload = async () => {
-  let copyButton = document.getElementById("copy-text")
+  const clearButton = document.getElementById('clear')
+  const readAllButton = document.getElementById('read-all')
   
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
   const doFnInPage = fn => chrome.scripting.executeScript({
@@ -27,15 +8,42 @@ window.onload = async () => {
     function: fn,
   })
 
+  // remove extra text
   doFnInPage(() => {
-    // remove extra text
     document.addEventListener('copy', (event) => {
       event.clipboardData.setData('text', document.getSelection())
       event.preventDefault()
     })
   })
 
-  copyButton.addEventListener('click', () => {
-    doFnInPage(doCopy)
+  
+  clearButton.addEventListener('click', () => {
+    doFnInPage(() => {
+      // 百度文库等添加ctrl+c监听事件阻止复制
+      window.addEventListener('keydown', function(event) {
+        event.stopImmediatePropagation()
+      }, true)
+      
+      // 移除code、pre userSelect为none
+      const setUserSelect = (node) => window.getComputedStyle(node).userSelect === 'none' && (node.style.userSelect = 'auto')
+      document.querySelectorAll('code').forEach(setUserSelect)
+      document.querySelectorAll('pre').forEach(setUserSelect)
+      document.querySelectorAll('code div[data-title="登录后复制"]').forEach(node => node.style.display = 'none')
+    })
+  })
+
+  readAllButton.addEventListener('click', () => {
+    doFnInPage(() => {
+      // 展示隐藏部分
+      const content = document.querySelector('.article_content')
+      if(content){
+        content.style.height = 'unset'
+      }
+      // 移除底部讨厌的关注后阅读
+      const hideBox = document.querySelector('.hide-article-box')
+      if(hideBox){
+        hideBox.style.display = 'none'
+      }
+    })
   })
 }
