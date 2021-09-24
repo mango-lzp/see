@@ -6,7 +6,7 @@ google-extension
 ![image](https://user-images.githubusercontent.com/41472923/134287271-ef796cfd-a7ab-43d0-a998-3d3dbc582bd4.png)  
 之后选择文件夹即可  
 
-*打开插件之后复制的文字将不带格式
+*打开插件之后复制文字会清除一些网站复制后缀（csdn的来源声明），注：同时会清除文字的格式
 
 不定期更新  
 
