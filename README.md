@@ -2,9 +2,10 @@
 google-extension
 
 使用方法：  
-`git clone https://github.com/mango-lzp/gg-extension.git`  
-![image](https://user-images.githubusercontent.com/41472923/134287271-ef796cfd-a7ab-43d0-a998-3d3dbc582bd4.png)  
-之后选择文件夹（copy1.0）即可  
+1. `git clone https://github.com/mango-lzp/gg-extension.git`  
+2. 下载完成之后打开谷歌浏览器
+3. ![image](https://user-images.githubusercontent.com/41472923/134287271-ef796cfd-a7ab-43d0-a998-3d3dbc582bd4.png)  
+4. 之后选择文件夹（copy1.0）即可  
 
 *打开插件之后复制文字会清除一些网站复制后缀（csdn的来源声明），注：同时会清除文字的格式
 
