@@ -6,6 +6,7 @@ google-extension
 2. 下载完成之后打开谷歌浏览器
 3. ![image](https://user-images.githubusercontent.com/41472923/134287271-ef796cfd-a7ab-43d0-a998-3d3dbc582bd4.png)  
 4. 之后选择文件夹（copy1.0）即可  
+5. 浏览器便会出现该插件![image](https://user-images.githubusercontent.com/41472923/134656566-87f8bcd6-9166-48c9-803d-ec57b5ea3ad7.png)
 
 *打开插件之后复制文字会清除一些网站复制后缀（csdn的来源声明），注：同时会清除文字的格式
 
