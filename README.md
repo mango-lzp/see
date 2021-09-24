@@ -5,7 +5,10 @@ google-extension
 `git clone https://github.com/mango-lzp/gg-extension.git`  
 ![image](https://user-images.githubusercontent.com/41472923/134287271-ef796cfd-a7ab-43d0-a998-3d3dbc582bd4.png)  
 之后选择文件夹即可  
-不定期更新
+
+*打开插件之后复制的文字将不带格式
+
+不定期更新  
 
 ### csdn
 点击clear可以复制code代码  
