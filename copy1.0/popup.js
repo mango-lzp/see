@@ -13,7 +13,8 @@ window.onload = async () => {
     document.addEventListener('copy', (event) => {
       event.clipboardData.setData('text', document.getSelection())
       event.preventDefault()
-    })
+      event.stopImmediatePropagation()
+    }, true)
   })
 
   
