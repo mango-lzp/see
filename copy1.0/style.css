@@ -24,10 +24,10 @@
   border: 1px solid #dbdde0;
 }
 .block + .block {
-  margin-top: 2px;
+  margin-top: 4px;
 }
 .block + header {
-  margin-bottom: 12px;
+  margin-top: 12px;
 }
 .wrap .content .block .svg-wrap {
   display: inline-block;
