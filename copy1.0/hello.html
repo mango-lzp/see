@@ -6,9 +6,38 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="style.css">
 </head>
-<body style="width: 300px;font-size: 18px">
+<body style="width: 300px;font-size: 18px; margin: 0">
   <script src="popup.js"></script>
-  click <button id='clear'>clear</button> to ensure you can copy
-  click <button id='read-all'>read-all</button> to read all without follow
+  <div class='wrap'>
+    <title class='padding-16-20'>阅读工具</title>
+    <div class='content padding-16-20'>
+      <header>
+        文本功能
+      </header>
+      <div class="block">
+        <div class="svg-wrap">
+          <img src='checkmark-circle-fill.svg' />
+        </div>
+        去除文本格式
+      </div>
+      <div class="block" id='clear'>
+        <div class="svg-wrap">
+          <img src='minus-circle.svg' />
+        </div>
+        解除禁用限制
+      </div>
+      <header>
+        阅读功能
+      </header>
+      <div class="block" id='read-all'>
+        <div class="svg-wrap">
+          <img src='minus-circle.svg' />
+        </div>
+        csdn免关注阅读全文
+      </div>
+    </div>
+    <!-- click <button id='clear'>clear</button> to ensure you can copy
+    click <button id='read-all'>read-all</button> to read all without follow -->
+  </div>
 </body>
 </html>

@@ -1,3 +1,9 @@
+chrome.runtime.onInstalled.addListener(function() {
+  chrome.storage.sync.set({ clearBoolean: false }, function() {
+    console.log('The clearBoolean is false.');
+  });
+});
+
 window.onload = async () => {
   const clearButton = document.getElementById('clear')
   const readAllButton = document.getElementById('read-all')
@@ -17,8 +23,17 @@ window.onload = async () => {
     }, true)
   })
 
-  
-  clearButton.addEventListener('click', () => {
+  let storageValue = await chrome.storage.sync.get(['clearBoolean'])
+  const  { clearBoolean } = storageValue || {}
+  console.log(storageValue)
+  if(clearBoolean) {
+    clearImg = 'checkmark-circle-fill.svg'
+    clearFnInPage()
+  } else {
+    clearImg = 'minus-circle.svg'
+  }
+
+  const clearFnInPage = () => {
     doFnInPage(() => {
       // 百度文库等添加ctrl+c监听事件阻止复制
       window.addEventListener('keydown', function(event) {
@@ -37,9 +52,26 @@ window.onload = async () => {
       document.querySelectorAll('pre').forEach(setUserSelect)
       document.querySelectorAll('code div[data-title="登录后复制"]').forEach(node => node.style.display = 'none')
     })
+  }
+  
+  clearButton.addEventListener('click', () => {
+    if(clearBoolean) return
+
+    // 设置状态
+    chrome.storage.sync.set({ clearBoolean: false })
+
+    // 更换icon
+    const clearImg = document.querySelector('#clear .svg-wrap img')
+    clearImg.src = 'checkmark-circle-fill.svg'
+
+    clearFnInPage()
   })
 
   readAllButton.addEventListener('click', () => {
+    // 更换icon
+    const clearImg = document.querySelector('#read-all .svg-wrap img')
+    clearImg.src = 'checkmark-circle-fill.svg'
+
     doFnInPage(() => {
       // 展示隐藏部分
       const content = document.querySelector('.article_content')
