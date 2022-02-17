@@ -1,12 +1,29 @@
-chrome.runtime.onInstalled.addListener(function() {
-  chrome.storage.sync.set({ clearBoolean: false }, function() {
-    console.log('The clearBoolean is false.');
-  });
-});
+import { ClearDisabledId, ClearTextId, ReadAllId, TrueImage, FalseImage } from './enum.js'
+
+const options = {}
+const keyMap = {
+  [ClearTextId]: 'clearTextFormat',
+  [ClearDisabledId]: 'clearDisabled',
+  [ReadAllId]: 'csdnReadAll',
+}
+
+const Initialize = async () => {
+  await Promise.all(
+    Object.values(keyMap).map(async key => {
+      return new Promise(resolve => {
+        chrome.storage.sync.get(key, (data) => {
+          Object.assign(options, { [key]: data[key] })
+          resolve()
+        })
+      })
+    })
+  )
+}
 
 window.onload = async () => {
-  const clearButton = document.getElementById('clear')
-  const readAllButton = document.getElementById('read-all')
+  const clearTextButton = document.getElementById(ClearTextId)
+  const clearDisabledButton = document.getElementById(ClearDisabledId)
+  const readAllButton = document.getElementById(ReadAllId)
   
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
   const doFnInPage = fn => chrome.scripting.executeScript({
@@ -14,24 +31,20 @@ window.onload = async () => {
     function: fn,
   })
 
-  // remove extra text
-  doFnInPage(() => {
-    document.addEventListener('copy', (event) => {
-      event.clipboardData.setData('text', document.getSelection())
-      event.preventDefault()
-      event.stopImmediatePropagation()
-    }, true)
-  })
+  await Initialize()
+  console.log(options)
 
-  let storageValue = await chrome.storage.sync.get(['clearBoolean'])
-  const  { clearBoolean } = storageValue || {}
-  console.log(storageValue)
-  if(clearBoolean) {
-    clearImg = 'checkmark-circle-fill.svg'
-    clearFnInPage()
-  } else {
-    clearImg = 'minus-circle.svg'
+  const checkIcon = (id) => {
+    // 更换icon
+    const state = options[keyMap[id]]
+    const clearImg = document.querySelector(`#${id} .svg-wrap img`)
+    console.log(state, clearImg)
+    clearImg.src = state ? TrueImage : FalseImage
   }
+
+  checkIcon(ClearTextId)
+  checkIcon(ClearDisabledId)
+  checkIcon(ReadAllId)
 
   const clearFnInPage = () => {
     doFnInPage(() => {
@@ -53,24 +66,38 @@ window.onload = async () => {
       document.querySelectorAll('code div[data-title="登录后复制"]').forEach(node => node.style.display = 'none')
     })
   }
-  
-  clearButton.addEventListener('click', () => {
-    if(clearBoolean) return
+
+  clearTextButton.addEventListener('click', () => {
+    const key = keyMap[ClearTextId]
+    const value = options[key]
 
     // 设置状态
-    chrome.storage.sync.set({ clearBoolean: false })
-
+    options[key] = !value
+    chrome.storage.sync.set({ [key]: !value })
     // 更换icon
-    const clearImg = document.querySelector('#clear .svg-wrap img')
-    clearImg.src = 'checkmark-circle-fill.svg'
+    checkIcon(ClearTextId)
+  })
+  
+  clearDisabledButton.addEventListener('click', () => {
+    const key = keyMap[ClearDisabledId]
+    const value = options[key]
+
+    // 设置状态
+    options[key] = !value
+    chrome.storage.sync.set({ [key]: !value })
+    // 更换icon
+    checkIcon(ClearDisabledId)
 
     clearFnInPage()
   })
 
   readAllButton.addEventListener('click', () => {
-    // 更换icon
-    const clearImg = document.querySelector('#read-all .svg-wrap img')
-    clearImg.src = 'checkmark-circle-fill.svg'
+    const key = keyMap[ReadAllId]
+    const value = options[key]
+
+    options[key] = !value
+    chrome.storage.sync.set({ [key]: !value })
+    checkIcon(ReadAllId)
 
     doFnInPage(() => {
       // 展示隐藏部分
