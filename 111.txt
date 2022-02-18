@@ -1,9 +1,0 @@
-  document.addEventListener('copy', (event) => {
-    if(window.flag){
-      console.log(111)
-      event.clipboardData.setData('text', document.getSelection())
-      event.preventDefault()
-      event.stopPropagation()
-      event.stopImmediatePropagation()
-    }
-  }, true)
