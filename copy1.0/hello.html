@@ -5,22 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="style.css">
+  <script type="text/javascript" src="utils.js"></script>
 </head>
 <body style="width: 300px;font-size: 18px; margin: 0">
-  <script src="popup.js"></script>
+  <script src="popup.js" type="module"></script>
   <div class='wrap'>
     <title class='padding-16-20'>复制助手</title>
     <div class='content padding-16-20'>
       <header>
         文本功能
       </header>
-      <div class="block">
+      <div class="block" id='clear-text'>
         <div class="svg-wrap">
           <img src='checkmark-circle-fill.svg' />
         </div>
         去除文本格式
       </div>
-      <div class="block" id='clear'>
+      <div class="block" id='clear-disabled'>
         <div class="svg-wrap">
           <img src='minus-circle.svg' />
         </div>
