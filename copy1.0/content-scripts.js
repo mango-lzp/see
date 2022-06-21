@@ -7,6 +7,7 @@ window.onload = async () => {
   const proxy = new Proxy({}, {
     set(target, propKey, value, receiver) {
       Reflect.set(target, propKey, value, receiver)
+      Reflect.set(options, key, value)
       switch(propKey) {
         case 'clearDisabled': {
           if(value) {
@@ -27,7 +28,6 @@ window.onload = async () => {
   // 同步更新options数据
   chrome.storage.onChanged.addListener(function (changes) {
     for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
-      options[key] = newValue
       proxy[key] = newValue
     }
   })
@@ -60,6 +60,15 @@ function clearDisable () {
   window.addEventListener('keydown', function(event) {
     if(options.clearDisabled) {
       event.stopImmediatePropagation()
+    }
+  }, true)
+
+  // 飞书等添加 copy 监听事件阻止复制
+  window.addEventListener('copy', function(event) {
+    // copy事件已经在clearTextFormat里面处理了，当clearTextFormat为false才需要做处理。
+    if(options.clearDisabled && !options.clearTextFormat) {
+      event.stopImmediatePropagation()
+      event.stopPropagation()
     }
   }, true)
 
