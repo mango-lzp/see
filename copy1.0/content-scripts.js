@@ -7,7 +7,7 @@ window.onload = async () => {
   const proxy = new Proxy({}, {
     set(target, propKey, value, receiver) {
       Reflect.set(target, propKey, value, receiver)
-      Reflect.set(options, key, value)
+      Reflect.set(options, propKey, value)
       switch(propKey) {
         case 'clearDisabled': {
           if(value) {
