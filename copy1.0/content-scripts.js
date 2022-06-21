@@ -67,6 +67,7 @@ function clearDisable () {
   window.addEventListener('copy', function(event) {
     // copy事件已经在clearTextFormat里面处理了，当clearTextFormat为false才需要做处理。
     if(options.clearDisabled && !options.clearTextFormat) {
+      console.log('enable copy')
       event.stopImmediatePropagation()
       event.stopPropagation()
     }
