@@ -19,9 +19,16 @@ window.onload = async () => {
 
   const checkIcon = (id) => {
     // 更换icon
-    const state = options[keyMap[id]]
-    const clearImg = document.querySelector(`#${id} .svg-wrap img`)
-    clearImg.src = state ? TrueImage : FalseImage
+    new Promise(resolve => {
+      if(keyMap[id]) {
+        resolve(options[keyMap[id]])
+      } else {
+        getChromeStorageSync('extends').then(extendsObj => resolve(extendsObj[id].enable))
+      }
+    }).then(enable => {
+      const clearImg = $(`#${id} .svg-wrap img`)
+      clearImg.src = enable ? TrueImage : FalseImage
+    })
   }
 
   ;[ClearTextId, ClearDisabledId, ReadAllId].forEach(id => {
@@ -38,4 +45,19 @@ window.onload = async () => {
       checkIcon(id)
     })
   })
+
+  $$('#item-container .block')
+    .forEach(node => {
+      if(Object.keys(keyMap).includes(node.id)) return
+      
+      node.addEventListener('click', () => {
+        checkIcon(node.id)
+
+        getExtendsStorage.then(obj => setExtendsStorage({ id: node.id, enable: !obj.enable}))
+      })
+    })
+
+  $('#create').onclick = () => {
+    addCustomItem($('#title-text').value, $('#scripts').value)
+  }
 }

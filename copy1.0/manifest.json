@@ -16,5 +16,6 @@
   "background":{
     "service_worker": "background.js"
   },
+  "web_accessible_resources": ["script/https://cdn.bootcdn.net"],
   "permissions":["activeTab", "storage", "scripting"]
 }
