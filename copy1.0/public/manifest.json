@@ -4,18 +4,14 @@
   "version": "1.0",
   "manifest_version": 3,
   "action": {
-    "default_popup": "hello.html",
+    "default_popup": "index.html",
     "default_icon": "search.png"
   },
   "content_scripts": [
     {
-      "js": ["utils.js", "content-scripts.js"],
+      "js": ["content-scripts.js"],
       "matches": ["<all_urls>"]
     }
   ],
-  "background":{
-    "service_worker": "background.js"
-  },
-  "web_accessible_resources": ["script/https://cdn.bootcdn.net"],
   "permissions":["activeTab", "storage", "scripting"]
 }
