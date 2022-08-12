@@ -1,0 +1,12 @@
+.modal-wrap {
+  position: absolute;
+  margin: 0 auto;
+  top: 0;
+  width: 100%;
+  padding: 20px;
+  background-color: white;
+}
+
+.modal-wrap .ant-form-item {
+  max-width: unset;
+}

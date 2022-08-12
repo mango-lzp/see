@@ -12,6 +12,9 @@ export default ({ mode }) => {
   if(isDev) plugins.push(HRMMiddleware())
 
   return defineConfig({
+    build: {
+      emptyOutDir: false
+    },
     plugins
   })
 }

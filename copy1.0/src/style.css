@@ -8,6 +8,10 @@
   border-bottom: 1px solid #dbdde0;
 }
 
+.wrap {
+  width: 320px;
+}
+
 .wrap > .title-wrap > title {
   display: block;
   font-size: 16px;

@@ -13,5 +13,19 @@
       "matches": ["<all_urls>"]
     }
   ],
+  "background":{
+    "service_worker": "background.js"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "page-script.js"
+      ],
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ]
+    }
+  ],
   "permissions":["activeTab", "storage", "scripting"]
 }
