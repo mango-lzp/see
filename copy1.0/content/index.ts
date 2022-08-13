@@ -97,4 +97,7 @@ window.onload = async () => {
       event.stopPropagation()
     }
   }, true)
+
+  // @ts-ignore next-line
+  chrome.runtime.sendMessage("runEnableScripts")
 }

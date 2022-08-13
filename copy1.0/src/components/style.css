@@ -10,3 +10,15 @@
 .modal-wrap .ant-form-item {
   max-width: unset;
 }
+
+.wrap .content .block:hover .icon-trash{
+  display: unset;
+}
+
+.icon-trash {
+  display: none;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}

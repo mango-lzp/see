@@ -22,6 +22,7 @@ export const HRMMiddleware = () => {
     clearTimeout(timer)
     ws = null
     timer = null
+    socketServer = null
   }
   
   return {

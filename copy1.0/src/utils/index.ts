@@ -1,48 +1,4 @@
 import { v4 } from 'uuid'
-// const Initialize = async (initial, keyList) => {
-//   await Promise.all(
-//     keyList.map(async key => {
-//       return new Promise(resolve => {
-//         chrome.storage.sync.get(key, (data) => {
-//           Object.assign(initial, { [key]: data[key] })
-//           resolve()
-//         })
-//       })
-//     })
-//   )
-// }
-
-/**
-  <div class="block" id='read-all'>
-    <div class="svg-wrap">
-      <img src='minus-circle.svg' />
-    </div>
-    title
-  </div>
- */
-// const addCustomItem = (title, scripts) => {
-//   const dom = document.createElement('div')
-//   dom.className = 'block'
-//   const id = genUuid()
-//   dom.id = id
-//   dom.innerHTML = `
-//     <div class="svg-wrap">
-//       <img src='minus-circle.svg' />
-//     </div>
-//     ${title}
-//   `
-
-//   $('#item-container').appendChild(dom)
-
-//   setExtendsStorage({
-//     id,
-//     title,
-//     scripts,
-//     enable: false,
-//   })
-// }
-
-// const genUuid = () => v4().replace(/-/g, '')
 
 export const getChromeStorageSync = key => new Promise(
   resolve => chrome.storage.sync.get(key, data => resolve(data[key]))
@@ -56,19 +12,27 @@ const setStorage = (key, data) => new Promise(resolve => {
   getChromeStorageSync(key)
     .then((extendsObj: any) => {
       const obj = extendsObj || {}
-      const old = obj[id] || {}
+      const old = obj[id] || { type: key, createDate: new Date() }
       chrome.storage.sync.set({
         [key]: {
           ...obj,
-          [id]: Object.assign(old, data, { type: key })
+          [id]: Object.assign(old, data)
         }
       }, () => resolve(null))
     })
 })
 
+const deleteStorage = (key, id) => {
+  getChromeStorageSync(key).then((obj: any) => {
+    Reflect.deleteProperty(obj || {}, id)
+    chrome.storage.sync.set({ [key]: obj })
+  })
+}
+
 // const getExtendsStorage = id => getChromeStorageSync('extends').then(obj => (obj || {})[id] || {})
 
 export {
   setStorage,
+  deleteStorage,
   genUuid
 }

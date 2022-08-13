@@ -1,16 +1,4 @@
 // chrome.runtime.onInstalled.addListener(() => {
-  console.log('background loaded')
-  chrome.storage.sync.get('extends', ({ extends: data }) => {
-    getCurrentTab().then((tab) => {
-      Object.values(data || {}).map(card => {
-        if(card.enable) {
-          console.log(`i m exec ${card.title}`, card.scripts.slice(0, 10))
-          execEval(card.scripts, tab.id)
-        }
-      })
-
-    })
-  })
 // })
 
 
@@ -23,23 +11,20 @@
  * document.dispatchEvent with custom event is used for transferring the payload to the page script
  */
 function injectPageScript(scripts) {
-  const script = document.createElement("script");
-
-  script.setAttribute('type', 'text/javascript');
-  script.setAttribute('src', chrome.runtime.getURL("page-script.js"));
+  const script = document.createElement("script")
+  script.setAttribute('type', 'text/javascript')
+  script.setAttribute('src', chrome.runtime.getURL("page-script.js"))
 
   script.onload = () => {
     /*
       * Using document.dispatchEvent instead window.postMessage by security reason
       * https://github.com/w3c/webextensions/issues/78#issuecomment-915272953
       */
-    document.dispatchEvent(new CustomEvent('message', {
-      detail: scripts
-    }))
+    document.dispatchEvent(new CustomEvent('message', { detail: scripts }))
     document.head.removeChild(script)
   }
 
-  document.head.appendChild(script);
+  document.head.appendChild(script)
 }
 
 function getCurrentTab() {
@@ -63,7 +48,8 @@ function execEval (scripts, tabId) {
   })
 }
 
-function RunAllCustomScripts() {
+// 页面load完成时需要触发
+function RunAllEnableCustomScripts() {
   chrome.storage.sync.get('extends', ({ extends: data }) => {
     getCurrentTab().then((tab) => {
       Object.values(data || {}).map(card => {
@@ -72,7 +58,36 @@ function RunAllCustomScripts() {
           execEval(card.scripts, tab.id)
         }
       })
-
     })
   })
 }
+
+function runScripts (scripts) {
+  getCurrentTab().then((tab) => {
+    console.log(`i m exec scripts: ${scripts.slice(0, 10)}...`)
+    execEval(scripts, tab.id)
+  })
+}
+
+chrome.runtime.onMessage.addListener(
+  (request, sender, sendResponse) => {
+    if (request === "runEnableScripts")
+      RunAllEnableCustomScripts()
+  }
+)
+
+// 用户更改状态时触发
+chrome.storage.onChanged.addListener(function (changes) {
+  for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
+    if(key === 'extends') {
+      Object.values(oldValue || {})
+      // 从不生效改成生效。则执行一次自定义脚本
+        .filter(card => !card.enable)
+        .map(card => {
+          if(newValue[card.id].enable) {
+            runScripts(card.scripts)
+          }
+        })
+    }
+  }
+})

@@ -35,9 +35,7 @@ function App() {
 
   useMount(async() => {
     const list = await getList('default')
-    defaultList.map(card => list.find(item => item.id === card.id) ?? card)
-
-    setList(list as typeof defaultList)
+    setList(defaultList.map(card => list.find(item => item.id === card.id) ?? card))
   })
 
   useMount(async() => {

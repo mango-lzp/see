@@ -17,7 +17,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     console.log('reload trigger', event)
       let msg = JSON.parse(event.data)
       if (msg === 'watch-build-done') {
-          window.location.reload()
+        chrome.runtime.reload()
       }
   }
 // }

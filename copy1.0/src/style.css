@@ -2,6 +2,10 @@
   padding: 16px 20px;
 }
 
+.float-left {
+  float: left;
+}
+
 .title-wrap {
   display: flex;
   justify-content: space-between;
@@ -27,6 +31,7 @@
 .wrap .content .block {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 12px;
   font-size: 12px;
   background-color: rgb(244, 248, 251);
