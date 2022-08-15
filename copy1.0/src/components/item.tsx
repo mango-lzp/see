@@ -1,17 +1,20 @@
-import { Popover } from 'antd'
+import { Popconfirm } from 'antd'
+// 按需引入样式
+import 'antd/lib/popconfirm/style/css'
+
 import { Card } from '../App'
 import checkedSvg from '../assets/checkmark-circle-fill.svg'
 import uncheckSvg from '../assets/minus-circle.svg'
 import trashSvg from '../assets/trash.svg'
-import { setStorage, deleteStorage } from '../utils'
-import { useState } from 'react';
+import { storage } from '../utils'
 
 export const CardItem = (card: Card) => {
-  const { id, enable, type, title, ...res} = card
+  const { id, enable, type, title, ...res } = card
   const onClick = () => {
     console.log('click', id)
     
-    setStorage(type, {
+    storage.set(id, {
+      type,
       id,
       title,
       enable: !enable,
@@ -19,21 +22,9 @@ export const CardItem = (card: Card) => {
     })
   }
 
-  const [deleteVisible, setDeleteVisible] = useState(false)
-  // const onClickTrash: React.DOMAttributes<HTMLImageElement>['onClick'] = (e) => {
-    
-  // }
-
-  const content = (
-    <div>
-      <p>Content</p>
-      <button onClick={() => {
-        deleteStorage('extends', id)
-        setDeleteVisible(false)
-      }}>OK</button>
-      <button onClick={() => setDeleteVisible(false)}>cancel</button>
-    </div>
-  );
+  const onConfirm = () => {
+    storage.remove(id)
+  }
 
   return <div className="block" id={id} onClick={onClick}>
     <div>
@@ -44,9 +35,13 @@ export const CardItem = (card: Card) => {
     </div>
     {type === 'extends' &&
       <div onClick={e => e.stopPropagation()}>
-        <Popover visible={deleteVisible} placement='topRight' title='确认删除？' content={content} trigger="click">
-          <img onClick={() => setDeleteVisible(true)} src={trashSvg} className='icon-trash' />
-        </Popover>
+        <Popconfirm
+          placement='topRight'
+          title='确认删除？'
+          onConfirm={onConfirm}
+        >
+          <img src={trashSvg} className='icon-trash' />
+        </Popconfirm>
       </div>
     }
   </div>

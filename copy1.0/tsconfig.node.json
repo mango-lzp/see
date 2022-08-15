@@ -7,6 +7,6 @@
   },
   "include": [
     "vite.config.ts",
-    "rollup-plugin-hrm.ts"
+    "rollup-plugins"
   ]
 }

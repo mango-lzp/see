@@ -16,39 +16,36 @@ function debounce(fn, timeout = 400) {
 }
 
 export const HRMMiddleware = () => {
-  let ws: WebSocket | null
+  let wsClient: WebSocket | null
   let socketServer : WebSocketServer | null
-  let timer
   
   console.log('HRM middleware in', '-----------')
   // 发送通知
   const send = (msg) => {
     console.log('before send meg', msg)
-    if (!ws) return
+    if (!wsClient) return
     msg = JSON.stringify(msg)
-    ws.send(msg)
+    wsClient.send(msg)
     console.log('sended meg', msg)
   }
 
   // 清理资源
   // 如果不清空变量的引用，插件将不会自动退出
   const close = () => {
-    ws && ws.close()
-    clearTimeout(timer)
-    ws = null
-    timer = null
+    wsClient && wsClient.close()
+    wsClient = null
     socketServer = null
   }
   
   return {
     name: 'hrm-plugin',
     apply(config: UserConfig, { command }: ConfigEnv) {
-      // 我们只在 build 且 watch 的情况下使用插件
+      // build 且 watch 的情况下插件生效
       const canUse = command === 'build' && Boolean(config.build?.watch)
       if (canUse) {
         // 创建 websocket server
         socketServer = new WebSocketServer({ port: 2333 })
-        socketServer.on('connection', (client) => { ws = client })
+        socketServer.on('connection', (client) => { wsClient = client })
         // public 文件发生变动，需要reload插件。
         chokidar
           .watch([PUBLIC_DIR, CONTENT_FILE], { ignoreInitial: true })
@@ -67,11 +64,8 @@ export const HRMMiddleware = () => {
     // buildStart: options => console.log(options),
 
     // popup页面发生变动，重新加载window即可。
-    buildEnd: () => { timer = setTimeout(() => send('reload-window'), 500) },
-    // closeBundle() {
-    //   timer = setTimeout(() => send('watch-build-done'), 500)
-    // },
-    watchChange: () => clearTimeout(timer),
+    closeBundle: () => send('reload-window'),
+    // watchChange: () => {},
     closeWatcher: () => close()
   }
 }

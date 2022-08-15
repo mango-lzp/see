@@ -1,4 +1,6 @@
-@import 'antd/dist/antd.css';
+/* @import 'antd/dist/antd.css'; */
+/* Popover, Form, Input, Button */
+/* 全量打包 549.74 KiB，按需引入 82.08 KiB */
 
 :root {
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;

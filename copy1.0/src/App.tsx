@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from 'react'
 import { CardItem } from './components/item'
-import uncheckSvg from './assets/minus-circle.svg'
+import { NewModal } from './components/modal'
+import { useMount } from './hoooks'
+import { storage } from './utils'
 import './style.css'
 import './index.css'
-import { useMount } from './hoooks'
-import { NewModal } from './components/modal'
 
 type chromeStorageListener = Parameters<chrome.storage.StorageChangedEvent['addListener']>[0]
 
@@ -26,6 +26,7 @@ function App() {
 
   const getList = useCallback(async (type: 'default' | 'extends') => {
     return new Promise<Card[]>(resolve => {
+      // storage.get()
       chrome.storage.sync.get(type, (data) => {
         const obj = data[type] || {}
         resolve(Object.values(obj))
@@ -34,8 +35,13 @@ function App() {
   }, [])
 
   useMount(async() => {
-    const list = await getList('default')
-    setList(defaultList.map(card => list.find(item => item.id === card.id) ?? card))
+    const list = await storage.get<Card>(defaultList.map(item => item.id))
+    if(list.some(item => !item?.id)) {
+      return defaultList.map(item => {
+        storage.set(item.id, item)
+      })
+    }
+    setList(list)
   })
 
   useMount(async() => {
@@ -46,16 +52,19 @@ function App() {
   useEffect(() => {
     const listener: chromeStorageListener = (changes) => {
       for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
-        if(key === 'default') {
+        if(newValue?.type === 'default') {
           const list = defaultList.map(card => {
-            card = newValue[card.id]
+            if(card.id === newValue.id) { return newValue }
             return card
           })
           setList(list)
         }
 
-        if(key === 'extends') {
-          setCustomList(Object.values(newValue))
+        if(newValue?.type === 'extends') {
+          storage.get().then(data => {
+            const list = Object.values(data).filter(item => item.type === 'extends')
+            setCustomList(list)
+          })
         }
       }
     }
@@ -78,12 +87,6 @@ function App() {
           <header>
             自定义功能
           </header>
-          <div className="block" id='read-all'>
-            <div className="svg-wrap">
-              <img src={uncheckSvg} />
-            </div>
-            csdn免关注阅读全文
-          </div>
           {customList.map(card => <CardItem {...card} />)}
         </div>
         <NewModal

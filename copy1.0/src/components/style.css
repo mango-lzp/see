@@ -1,3 +1,8 @@
+/* @import 'antd/lib/popconfirm/style';
+@import 'antd/lib/form/style';
+@import 'antd/lib/input/style';
+@import 'antd/lib/button/style'; */
+
 .modal-wrap {
   position: absolute;
   margin: 0 auto;

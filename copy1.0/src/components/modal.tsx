@@ -1,6 +1,11 @@
 import { useState } from "react"
 import { Form, Input, Button } from 'antd'
-import { genUuid, setStorage } from "../utils"
+// 按需引入样式
+import 'antd/lib/button/style/css'
+import 'antd/lib/form/style/css'
+import 'antd/lib/input/style/css'
+
+import { genUuid, storage } from "../utils"
 import './style.css'
 
 const { Item } = Form
@@ -29,7 +34,7 @@ export const NewModal = (props: IProps) => {
   const onOk = () => {
     form.validateFields().then(value => {
       const uuid = genUuid()
-      setStorage('extends', {
+      storage.set(uuid, {
         id: uuid,
         type: 'extends',
         ...value,

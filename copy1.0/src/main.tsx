@@ -24,3 +24,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
       }
   }
 // }
+
+chrome.storage.sync.get({ type: 'default' }, (data) => {console.log(data)})
+chrome.storage.sync.get(['key', 'clear-text'], (data) => {console.log(data)})
+chrome.storage.sync.get((data) => {console.log(data)})
