@@ -16,8 +16,11 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   ws.onmessage = (event) => {
     console.log('reload trigger', event)
       let msg = JSON.parse(event.data)
-      if (msg === 'watch-build-done') {
+      if (msg === 'reload-app') {
         chrome.runtime.reload()
+      }
+      if(msg === 'reload-window') {
+        window.location.reload()
       }
   }
 // }

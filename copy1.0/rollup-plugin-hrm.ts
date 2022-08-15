@@ -1,0 +1,77 @@
+import { ConfigEnv, UserConfig } from "vite"
+import WebSocket, { WebSocketServer } from "ws"
+import fs from 'fs'
+import chokidar from 'chokidar'
+import { resolve } from 'path'
+
+const PUBLIC_DIR = resolve(__dirname, './public')
+const CONTENT_FILE = resolve(__dirname, './dist/content-scripts.js')
+
+function debounce(fn, timeout = 400) {
+  let timer
+  return (...args) => {
+    clearTimeout(timer)
+    timer = setTimeout(() => fn.apply(this, args), timeout)
+  }
+}
+
+export const HRMMiddleware = () => {
+  let ws: WebSocket | null
+  let socketServer : WebSocketServer | null
+  let timer
+  
+  console.log('HRM middleware in', '-----------')
+  // 发送通知
+  const send = (msg) => {
+    console.log('before send meg', msg)
+    if (!ws) return
+    msg = JSON.stringify(msg)
+    ws.send(msg)
+    console.log('sended meg', msg)
+  }
+
+  // 清理资源
+  // 如果不清空变量的引用，插件将不会自动退出
+  const close = () => {
+    ws && ws.close()
+    clearTimeout(timer)
+    ws = null
+    timer = null
+    socketServer = null
+  }
+  
+  return {
+    name: 'hrm-plugin',
+    apply(config: UserConfig, { command }: ConfigEnv) {
+      // 我们只在 build 且 watch 的情况下使用插件
+      const canUse = command === 'build' && Boolean(config.build?.watch)
+      if (canUse) {
+        // 创建 websocket server
+        socketServer = new WebSocketServer({ port: 2333 })
+        socketServer.on('connection', (client) => { ws = client })
+        // public 文件发生变动，需要reload插件。
+        chokidar
+          .watch([PUBLIC_DIR, CONTENT_FILE], { ignoreInitial: true })
+          .on('all', debounce((event, path) => {
+            console.log(event, path)
+            if(path.includes('/public/')) {
+              const dest = resolve(__dirname, `./dist/${path.split('/').pop()}`)
+              console.log(`copy file ${path} to ${dest}`)
+              fs.copyFileSync(path, dest)
+            }
+            send('reload-app')
+          }))
+      }
+      return canUse
+    },
+    // buildStart: options => console.log(options),
+
+    // popup页面发生变动，重新加载window即可。
+    buildEnd: () => { timer = setTimeout(() => send('reload-window'), 500) },
+    // closeBundle() {
+    //   timer = setTimeout(() => send('watch-build-done'), 500)
+    // },
+    watchChange: () => clearTimeout(timer),
+    closeWatcher: () => close()
+  }
+}
