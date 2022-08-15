@@ -3,13 +3,6 @@ const options = {
   extends: {} as any
 }
 
-
-//   // 功能三：显示全文
-//   if(options.csdnReadAll) {
-//     showHide()
-//   }
-// }
-
 function clearDisable () {
   // 移除百度文库的广告
   if(window.location.href.includes('baidu')){
