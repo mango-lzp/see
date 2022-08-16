@@ -24,16 +24,6 @@ function App() {
     }
   ])
 
-  const getList = useCallback(async (type: 'default' | 'extends') => {
-    return new Promise<Card[]>(resolve => {
-      // storage.get()
-      chrome.storage.sync.get(type, (data) => {
-        const obj = data[type] || {}
-        resolve(Object.values(obj))
-      })
-    })
-  }, [])
-
   useMount(async() => {
     const list = await storage.get<Card>(defaultList.map(item => item.id))
     if(list.some(item => !item?.id)) {
@@ -43,11 +33,7 @@ function App() {
     }
     setList(list)
   })
-
-  useMount(async() => {
-    const list = await getList('extends')
-    setCustomList(list as typeof customList)
-  })
+  useMount(() => storage.getExtendList().then(list => setCustomList(list)))
 
   useEffect(() => {
     const listener: chromeStorageListener = (changes) => {
@@ -60,11 +46,8 @@ function App() {
           setList(list)
         }
 
-        if(newValue?.type === 'extends') {
-          storage.get().then(data => {
-            const list = Object.values(data).filter(item => item.type === 'extends')
-            setCustomList(list)
-          })
+        if(newValue?.type === 'extends' || !newValue) {
+          storage.getExtendList().then(list => setCustomList(list))
         }
       }
     }

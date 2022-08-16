@@ -9,17 +9,9 @@ import trashSvg from '../assets/trash.svg'
 import { storage } from '../utils'
 
 export const CardItem = (card: Card) => {
-  const { id, enable, type, title, ...res } = card
+  const { id, enable, type, title } = card
   const onClick = () => {
-    console.log('click', id)
-    
-    storage.set(id, {
-      type,
-      id,
-      title,
-      enable: !enable,
-      ...res
-    })
+    storage.set(id, { enable: !enable })
   }
 
   const onConfirm = () => {

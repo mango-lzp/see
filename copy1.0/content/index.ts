@@ -1,7 +1,4 @@
-const options = {
-  default: {} as any,
-  extends: {} as any
-}
+const options = {}
 
 function clearDisable () {
   // 移除百度文库的广告
@@ -15,7 +12,6 @@ function clearDisable () {
   document.querySelectorAll('code').forEach(setUserSelect)
   document.querySelectorAll('pre').forEach(setUserSelect)
   document.querySelectorAll('code div[data-title="登录后复制"]').forEach((node: any) => node.style.display = 'none')
-  console.log('remove disabled')
 }
 
 // function showHide () {
@@ -34,7 +30,7 @@ function clearDisable () {
 window.onload = async () => {
   const proxy = new Proxy(options, {
     set(target, propKey, value, receiver) {
-      if(propKey === 'default' && value['clear-disabled'].enable) {
+      if(propKey === 'clear-disabled' && value.enable) {
         clearDisable()
       }
       return Reflect.set(target, propKey, value, receiver)
@@ -43,7 +39,7 @@ window.onload = async () => {
 
   //数据初始化
   await Promise.all(
-    Object.keys(options)
+    ['clear-disabled', 'clear-text']
     .map(key => new Promise(r => {
         // @ts-ignore next-line
         chrome.storage.sync.get(key, data => {
@@ -64,33 +60,62 @@ window.onload = async () => {
 
   // 功能一： remove extra text
   document.addEventListener('copy', (event) => {
-    if(options.default['clear-text']) {
+    if(options['clear-text']?.enable) {
       event.clipboardData!.setData('text', document.getSelection() as any)
       event.preventDefault()
       event.stopPropagation()
       event.stopImmediatePropagation()
-
-      console.log('clear text format')
     }
   }, true)
 
   // 功能二： 解除复制禁用
   // 百度文库等添加ctrl+c监听事件阻止复制
   window.addEventListener('keydown', function(event) {
-    if(options.default['clear-disabled']) {
+    if(options['clear-disabled']?.enable) {
       event.stopImmediatePropagation()
     }
   }, true)
   // 飞书等添加 copy 监听事件阻止复制
   window.addEventListener('copy', function(event) {
     // copy事件已经在clearTextFormat里面处理了，当clearTextFormat为false才需要做处理。
-    if(options.default['clear-disabled'] && !options.default['clear-text']) {
-      console.log('enable copy')
+    if(options['clear-disabled']?.enable && !options['clear-text']?.enable) {
       event.stopImmediatePropagation()
       event.stopPropagation()
     }
   }, true)
 
-  // @ts-ignore next-line
-  chrome.runtime.sendMessage("runEnableScripts")
+
+  /*
+ * We can manage page DOM from this function, but cannot share variables directly
+ * 
+ * 'eval' call or injecting script tag with inline source in this context cause CSP error,
+ *  but we can load script from web_accessible_resources and execute script string there 
+ * 
+ * document.dispatchEvent with custom event is used for transferring the payload to the page script
+ */
+  const inject = () => {
+    return new Promise(resolve => {
+      const script = document.createElement("script")
+      script.setAttribute('type', 'text/javascript')
+      // @ts-ignore next-line
+      script.setAttribute('src', chrome.runtime.getURL("page-script.js"))
+      script.onload = () => {
+        /*
+          * Using document.dispatchEvent instead window.postMessage by security reason
+          * https://github.com/w3c/webextensions/issues/78#issuecomment-915272953
+          */
+        // document.dispatchEvent(new CustomEvent('message', { detail: scripts }))
+        document.head.removeChild(script)
+        resolve(null)
+      }
+    
+      document.head.appendChild(script)
+    })
+  }
+
+  inject().then(() => {
+    // @ts-ignore next-line
+    chrome.runtime.sendMessage("runEnableScripts")
+  })
+
 }

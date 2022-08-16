@@ -4,8 +4,8 @@ import fs from 'fs'
 import chokidar from 'chokidar'
 import { resolve } from 'path'
 
-const PUBLIC_DIR = resolve(__dirname, './public')
-const CONTENT_FILE = resolve(__dirname, './dist/content-scripts.js')
+const PUBLIC_DIR = resolve(__dirname, '../public')
+const CONTENT_FILE = resolve(__dirname, '../dist/content-scripts.js')
 
 function debounce(fn, timeout = 400) {
   let timer
@@ -52,7 +52,7 @@ export const HRMMiddleware = () => {
           .on('all', debounce((event, path) => {
             console.log(event, path)
             if(path.includes('/public/')) {
-              const dest = resolve(__dirname, `./dist/${path.split('/').pop()}`)
+              const dest = resolve(__dirname, `../dist/${path.split('/').pop()}`)
               console.log(`copy file ${path} to ${dest}`)
               fs.copyFileSync(path, dest)
             }

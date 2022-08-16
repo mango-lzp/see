@@ -28,6 +28,8 @@ class ChromeStorage {
     }
   )
 
+  getExtendList = () => this.get().then(data => Object.values(data).filter((item: any) => item.type === 'extends'))
+
   set = <T extends PlainObject>(key: string, data: T) => new Promise<T>(resolve => {
     this.get(key).then(_data => {
       const newValue = Object.assign({ createDate: new Date().getTime() }, _data, data)

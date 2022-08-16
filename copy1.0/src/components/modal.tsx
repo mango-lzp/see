@@ -59,6 +59,9 @@ export const NewModal = (props: IProps) => {
       <Item name='scripts' label='scripts'>
         <Input.TextArea />
       </Item>
+      <Item name='destroy' label='destroy'>
+        <Input.TextArea />
+      </Item>
     </Form> 
   </Modal>
 }
