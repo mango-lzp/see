@@ -1,10 +1,12 @@
 import { useState, useEffect, useCallback } from 'react'
 import { CardItem } from './components/item'
+import { DefaultItem } from './components/default-item'
 import { NewModal } from './components/modal'
 import { useMount } from './hoooks'
 import { storage } from './utils'
 import './style.css'
 import './index.css'
+import { Footer } from './components/custom-footer'
 
 type chromeStorageListener = Parameters<chrome.storage.StorageChangedEvent['addListener']>[0]
 
@@ -57,26 +59,31 @@ function App() {
 
   return (
     <div className="App">
-      <div className='wrap'>
+      <div className='wrap' style={{ display: visible ? 'none' : undefined }} >
         <div className='title-wrap padding-16-20' >
           <title>复制助手</title>
-          <span onClick={() => setVisible(true)}>设置</span>
+          <span >x</span>
         </div>
         <div className='content padding-16-20' id="item-container">
-          <header>
+          {/* <header>
             文本功能
-          </header>
-          {defaultList.map(card => <CardItem {...card} />)}
+          </header> */}
+          <div className='default-wrap'>
+            {defaultList.map(card => <DefaultItem {...card} />)}
+          </div>
           <header>
             自定义功能
           </header>
-          {customList.map(card => <CardItem {...card} />)}
+          <div>
+            {customList.map(card => <CardItem {...card} />)}
+          </div>
+          <Footer onClick={() => setVisible(true)} />
         </div>
-        <NewModal
-          visible={visible}
-          setVisible={setVisible}
-        />
       </div>
+      <NewModal
+        visible={visible}
+        setVisible={setVisible}
+      />
     </div>
   )
 }

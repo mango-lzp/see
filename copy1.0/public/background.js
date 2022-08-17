@@ -1,6 +1,3 @@
-// chrome.runtime.onInstalled.addListener(() => {
-// })
-
 function getCurrentTab() {
   return new Promise((resolve) => {
     chrome.tabs
@@ -14,13 +11,20 @@ function getCurrentTab() {
   })
 }
 
-function execEval (scripts, tabId) {
+function execEval ({ scripts, id: scriptId }, tabId) {
   const executeScript = (id) => {
     console.log(`i m exec scripts: ${scripts.slice(0, 10)}...`)
     chrome.scripting.executeScript({
       target: { tabId: id },
-      func: (_scr) => document.dispatchEvent(new CustomEvent('message', { detail: _scr })),
-      args: [scripts],
+      func: (_scr, _srcId ) => document.dispatchEvent(
+        new CustomEvent('message', {
+          detail: {
+            scripts: _scr,
+            id: _srcId
+          } 
+        })
+      ),
+      args: [scripts, scriptId],
     })
   }
 
@@ -39,7 +43,7 @@ function RunAllEnableCustomScripts() {
       .filter(card => card.type === 'extends')
       .map(card => {
         if(card.enable) {
-          execEval(card.scripts, tab.id)
+          execEval({ scripts: card.scripts, id: card.id }, tab.id)
         }
       })
     })
@@ -51,6 +55,22 @@ chrome.runtime.onMessage.addListener(
     if (request === "runEnableScripts") {
       RunAllEnableCustomScripts()
     }
+
+    if(request?.type === 'extension_error') {
+      const id = request.id
+      let url = 'the extension'
+      if(sender?.tab?.url) {
+        url = new URL(sender.tab.url).origin
+      }
+      
+      chrome.storage.sync.get(id, data => {
+        const value = data[id]
+        const logs = value?.logs || []
+        logs.push(`from ${url}: ${request.log}`)
+    
+        chrome.storage.sync.set({ [id]: Object.assign({}, value, { logs })})
+      })
+    }
   }
 )
 
@@ -59,12 +79,12 @@ chrome.storage.onChanged.addListener(function (changes) {
   for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
     if(newValue?.type === 'extends') {
       if(!oldValue?.enable && newValue?.enable) {
-        execEval(newValue.scripts)
+        execEval(newValue)
       }
       if(oldValue?.enable && !newValue?.enable) {
         // 关闭开关时触发
         if(newValue.destroy) {
-          execEval(newValue.destroy)
+          execEval({ scripts: newValue.destroy, id: newValue.id })
         }
       }
     }

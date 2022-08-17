@@ -119,3 +119,12 @@ window.onload = async () => {
   })
 
 }
+
+// 收集报错信息，作为页面和插件的通信工具。
+window.addEventListener('message', event => {
+  const data = event.data
+  if(data.type === 'extension_error') {
+    // @ts-ignore next-line
+    chrome.runtime.sendMessage(data)
+  }
+})

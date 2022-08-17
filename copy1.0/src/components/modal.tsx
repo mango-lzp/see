@@ -1,4 +1,3 @@
-import { useState } from "react"
 import { Form, Input, Button } from 'antd'
 // 按需引入样式
 import 'antd/lib/button/style/css'
@@ -6,6 +5,7 @@ import 'antd/lib/form/style/css'
 import 'antd/lib/input/style/css'
 
 import { genUuid, storage } from "../utils"
+import { useUpdateEffect } from '../hoooks'
 import './style.css'
 
 const { Item } = Form
@@ -14,7 +14,7 @@ const Modal = (props: ModalProps) => {
   const { visible, onCancel, onOk } = props
 
   return <div
-    style={{ display: visible ? 'block' : 'none' }}
+    style={{ display: visible ? undefined : 'none' }}
     className='modal-wrap'
   >
     <p>添加自定义功能</p>
@@ -30,6 +30,12 @@ const Modal = (props: ModalProps) => {
 export const NewModal = (props: IProps) => {
   const [form] = Form.useForm()
   const { visible, setVisible } = props
+
+  useUpdateEffect(() => {
+    if(visible) {
+      form.resetFields()
+    }
+  }, [visible])
 
   const onOk = () => {
     form.validateFields().then(value => {
@@ -51,7 +57,6 @@ export const NewModal = (props: IProps) => {
       form={form}
       labelCol={{ span: 8 }}
       wrapperCol={{ span: 16 }}
-      onFinish={onOk}
     >
       <Item name='title' label='title'>
         <Input />

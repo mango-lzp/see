@@ -12,6 +12,13 @@
   border-bottom: 1px solid #dbdde0;
 }
 
+.default-wrap {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
 .wrap {
   width: 320px;
 }

@@ -4,9 +4,6 @@
 @import 'antd/lib/button/style'; */
 
 .modal-wrap {
-  position: absolute;
-  margin: 0 auto;
-  top: 0;
   width: 100%;
   padding: 20px;
   background-color: white;
@@ -26,4 +23,42 @@
   width: 16px;
   height: 16px;
   fill: currentColor;
+}
+
+.default-card-wrap {
+  padding: 12px;
+  width: calc(50% - 4px);
+  height: 80px;
+  background-color: rgb(244, 248, 251);
+}
+
+.default-card-wrap .default-card {
+  display: flex;
+  justify-content: space-between;
+  height: 36px;
+}
+
+.default-card-wrap .default-card .icon-wrap {
+  display: flex;
+  justify-self: center;
+  align-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: white;
+}
+.default-card-wrap .default-card .ant-switch-checked {
+  background-color: #57d344;
+}
+
+.footer-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-top: 12px;
+  width: 100%;
+  height: 32px;
+  border: 1px dashed gray;
+  font-size: 12px;
 }
