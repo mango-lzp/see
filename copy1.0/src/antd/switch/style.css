@@ -1,0 +1,16 @@
+.ant-switch-checked {
+  background-color: #00C782;
+}
+
+.ant-switch-small {
+  width: 32px;
+}
+
+.ant-switch-small .ant-switch-inner {
+  display: flex;
+  align-items: center;
+  margin: 0 5px 0 15px;
+}
+.ant-switch-small.ant-switch-checked .ant-switch-inner {
+  margin: 0 15px 0 5px;
+}

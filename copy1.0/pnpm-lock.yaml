@@ -11,6 +11,7 @@ specifiers:
   concurrently: ^7.3.0
   react: ^18.2.0
   react-dom: ^18.2.0
+  react-inlinesvg: ^3.0.1
   typescript: ^4.6.4
   uuid: ^8.3.2
   vite: ^3.0.0
@@ -29,6 +30,7 @@ devDependencies:
   antd: 4.22.4_react-dom@18.2.0+react@18.2.0
   chokidar: 3.5.3
   concurrently: 7.3.0
+  react-inlinesvg: 3.0.1_react@18.2.0
   typescript: 4.7.4
   uuid: 8.3.2
   vite: 3.0.5
@@ -918,6 +920,10 @@ packages:
     engines: {node: '>=0.8.0'}
     dev: true
 
+  /exenv/1.2.2:
+    resolution: {integrity: sha512-Z+ktTxTwv9ILfgKCk32OX3n/doe+OcLTRtqK9pcL+JsP3J1/VW8Uvl4ZjLlKqeW4rzK4oesDOGMEMRIZqtP4Iw==}
+    dev: true
+
   /fill-range/7.0.1:
     resolution: {integrity: sha512-qOo9F+dMUmC2Lcb4BbVvnKJxTPjCm+RRpe4gDuGrzkL7mEVl/djYSu2OdQ2Pa302N4oqkSg9ir6jaLWJ2USVpQ==}
     engines: {node: '>=8'}
@@ -1631,6 +1637,24 @@ packages:
       react: 18.2.0
       scheduler: 0.23.0
     dev: false
+
+  /react-from-dom/0.6.2_react@18.2.0:
+    resolution: {integrity: sha512-qvWWTL/4xw4k/Dywd41RBpLQUSq97csuv15qrxN+izNeLYlD9wn5W8LspbfYe5CWbaSdkZ72BsaYBPQf2x4VbQ==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      react: 18.2.0
+    dev: true
+
+  /react-inlinesvg/3.0.1_react@18.2.0:
+    resolution: {integrity: sha512-cBfoyfseNI2PkDA7ZKIlDoHq0eMfpoC3DhKBQNC+/X1M4ZQB+aXW+YiNPUDDDKXUsGDUIZWWiZWNFeauDIVdoA==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      exenv: 1.2.2
+      react: 18.2.0
+      react-from-dom: 0.6.2_react@18.2.0
+    dev: true
 
   /react-is/16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}

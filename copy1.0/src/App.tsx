@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { CardItem } from './components/item'
-import { DefaultItem } from './components/default-item'
+import { DefaultItem, CardItem, Icon } from './components'
 import { NewModal } from './components/modal'
 import { useMount } from './hoooks'
 import { storage } from './utils'
@@ -60,11 +59,11 @@ function App() {
   return (
     <div className="App">
       <div className='wrap' style={{ display: visible ? 'none' : undefined }} >
-        <div className='title-wrap padding-16-20' >
-          <title>复制助手</title>
+        <div className='title-wrap padding-20-24' >
+          <title><Icon type='click' style={{ marginRight: 8 }} />复制助手</title>
           <span >x</span>
         </div>
-        <div className='content padding-16-20' id="item-container">
+        <div className='content padding-20-24' id="item-container">
           {/* <header>
             文本功能
           </header> */}
@@ -72,7 +71,7 @@ function App() {
             {defaultList.map(card => <DefaultItem {...card} />)}
           </div>
           <header>
-            自定义功能
+            {`自定义功能 (${customList.length})`}
           </header>
           <div>
             {customList.map(card => <CardItem {...card} />)}
@@ -97,4 +96,5 @@ export interface Card {
   enable?: boolean
   scripts?: string
   type?: 'extends' | 'default'
+  logs?: string[]
 }

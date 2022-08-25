@@ -1,8 +1,4 @@
-import { Form, Input, Button } from 'antd'
-// 按需引入样式
-import 'antd/lib/button/style/css'
-import 'antd/lib/form/style/css'
-import 'antd/lib/input/style/css'
+import { Form, Input, Button } from '../antd'
 
 import { genUuid, storage } from "../utils"
 import { useUpdateEffect } from '../hoooks'
@@ -20,8 +16,8 @@ const Modal = (props: ModalProps) => {
     <p>添加自定义功能</p>
     {props.children}
     <div>
-      <Button onClick={onCancel}>cancel</Button>
-      <Button type="primary" htmlType="submit" onClick={onOk}>ok</Button>
+      <Button type="primary" htmlType="submit" style={{ marginRight: 8 }} onClick={onOk}>确定</Button>
+      <Button onClick={onCancel}>取消</Button>
     </div>
   </div>
 }
@@ -58,14 +54,14 @@ export const NewModal = (props: IProps) => {
       labelCol={{ span: 8 }}
       wrapperCol={{ span: 16 }}
     >
-      <Item name='title' label='title'>
+      <Item name='title' label='title' required>
         <Input />
       </Item>
-      <Item name='scripts' label='scripts'>
-        <Input.TextArea />
+      <Item name='scripts' label='scripts' required>
+        <Input.TextArea rows={6} />
       </Item>
       <Item name='destroy' label='destroy'>
-        <Input.TextArea />
+        <Input.TextArea rows={6} />
       </Item>
     </Form> 
   </Modal>

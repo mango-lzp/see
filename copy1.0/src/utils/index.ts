@@ -46,8 +46,21 @@ const storage = new ChromeStorage()
 
 const genUuid = () => v4().replace(/-/g, '')
 
+const classnames = (...nameList: any[]) => {
+  return nameList.map(name => {
+    if(typeof name === 'string') {
+      return name
+    }
+    if(typeof name === 'object') {
+      return Object.entries(name).filter(([, value]) => !!value).map(([key]) => key).join(' ')
+    }
+  })
+  .filter(name => name)
+  .join(' ')
+} 
 
 export {
   storage,
-  genUuid
+  genUuid,
+  classnames
 }
