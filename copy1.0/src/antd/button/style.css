@@ -2,3 +2,13 @@
   border-color: #00C782;
   background: #00C782;
 }
+
+.ant-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ant-btn > .icon + span {
+  margin-left: 4px;
+}

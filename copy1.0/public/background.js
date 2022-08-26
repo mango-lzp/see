@@ -78,7 +78,8 @@ chrome.runtime.onMessage.addListener(
 chrome.storage.onChanged.addListener(function (changes) {
   for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
     if(newValue?.type === 'extends') {
-      if(!oldValue?.enable && newValue?.enable) {
+      // 开启触发，或者打开的时候修改了脚本。
+      if((!oldValue?.enable && newValue?.enable) || (newValue.scripts !== oldValue.scripts && newValue?.enable)) {
         execEval(newValue)
       }
       if(oldValue?.enable && !newValue?.enable) {
