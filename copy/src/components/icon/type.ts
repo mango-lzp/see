@@ -1,7 +1,0 @@
-export type IconTypes = 'light'
- | 'click'
- | 'checkmark'
- | 'close'
- | 'edit'
- | 'trash'
- | 'arrow-left'
