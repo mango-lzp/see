@@ -1,20 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-import { Form, Input, Button } from '../antd'
-import { genUuid, storage } from "../utils"
+import { Form, Input, Button, Switch } from '../antd'
+import { Icon } from './icon'
+import { genUuid, storage, classnames } from "../utils"
 import { useUpdateEffect } from '../hoooks'
 import './style.css'
 
 const { Item } = Form
 
 const Modal = (props: ModalProps) => {
-  const { visible, onCancel, onOk, title, footer } = props
+  const { visible, onCancel, onOk, title, footer, className } = props
 
   return <div
     style={{ display: visible ? undefined : 'none' }}
-    className='modal-wrap'
+    className={classnames('modal-wrap', className)}
   >
-    <p><span onClick={onCancel}>{'<-  '}</span>{title}</p>
+    <p><Icon style={{ marginRight: 8 }} type='arrow-left' onClick={onCancel} />{title}</p>
     {props.children}
     {footer
       ? footer
@@ -30,6 +31,10 @@ const Modal = (props: ModalProps) => {
 export const NewModal = (props: IProps) => {
   const [form] = Form.useForm()
   const { visible, setVisible, current } = props
+  const [destroy, setDestroy] = useState(false)
+  
+  useUpdateEffect(() => setDestroy(current?.destroy), [current])
+
   useUpdateEffect(() => {
     if(visible) {
       form.resetFields()
@@ -65,8 +70,13 @@ export const NewModal = (props: IProps) => {
       <Item name='scripts' label='开启插件执行脚本' required>
         <Input.TextArea rows={5} />
       </Item>
-      <Item name='destroy' label='关闭插件执行脚本'>
-        <Input.TextArea rows={5} />
+      <Item label='关闭插件执行脚本' className='item-close'>
+        <Switch style={{ marginBottom: 8 }} checked={destroy} onChange={checked => setDestroy(checked)}></Switch>
+        {destroy &&
+          <Item name='destroy' style={{ marginBottom: 0 }}>
+            <Input.TextArea rows={5} />
+          </Item>
+        }
       </Item>
     </Form> 
   </Modal>
@@ -76,6 +86,7 @@ export const ErrorModal = (props: IProps) => {
   const { visible, setVisible, current } = props
 
   return <Modal
+    className='modal-error-log'
     visible={visible}
     onCancel={() => setVisible(false)}
     title='查看错误日志'
@@ -101,6 +112,7 @@ interface ModalProps {
   visible: boolean
   title?: string
   footer?: React.ReactNode
+  className?: string
   children?: any
   onCancel?: () => any
   onOk?: () => any

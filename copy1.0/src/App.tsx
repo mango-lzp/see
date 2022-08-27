@@ -62,7 +62,7 @@ function App() {
       <div className='wrap' style={{ display: visible !== 'normal' ? 'none' : undefined }} >
         <div className='title-wrap padding-20-24' >
           <title><Icon type='click' style={{ marginRight: 8 }} />复制助手</title>
-          <span >x</span>
+          <Icon onClick={() => window.close()} type='close' style={{ color: '#C8CACD', cursor: 'pointer' }} />
         </div>
         <div className='content padding-20-24' id="item-container">
           {/* <header>

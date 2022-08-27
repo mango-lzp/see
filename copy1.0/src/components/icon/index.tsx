@@ -4,20 +4,19 @@ import { classnames } from "../../utils"
 import { IconTypes } from "./type"
 import './style.css'
 
-interface IIconProp {
+interface IIconProp extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLSpanElement>, HTMLSpanElement> {
   type: IconTypes
   size?: number
-  style?: React.CSSProperties
   color?: string
-  className?: string
 }
 
-export const Icon = ({ type, size = 16, className, style }: IIconProp) => {
+export const Icon = ({ type, size = 16, className, style, ...res }: IIconProp) => {
   const svgUrl = new URL(`../../assets/${type}.svg`, import.meta.url).href
 
   return <span
     className={classnames(className, 'icon')}
     style={{ fontSize: size, ...style }}
+    {...res}
   >
     <InlineSVG
       style={{ fill: 'currentColor' }}
