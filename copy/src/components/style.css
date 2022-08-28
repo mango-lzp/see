@@ -30,15 +30,6 @@
   min-height: 320px;
 }
 
-.log-wrap {
-  padding: 12px;
-  background-color: rgb(250, 206, 208, 0.5);
-}
-
-.log-wrap + .log-wrap {
-  margin-top: 4px;
-}
-
 .log-wrap > span {
   color: #E24046;
   overflow-wrap: break-word;
@@ -46,10 +37,6 @@
 
 .modal-wrap .ant-form-item {
   max-width: unset;
-}
-
-.wrap .content .block:hover .icon-trash{
-  display: unset;
 }
 
 .healthy-icon {
@@ -62,6 +49,9 @@
 }
 .healthy-icon.healthy {
   background: #00C782;
+}
+.healthy-icon.inactive {
+  background: #96989B;
 }
 .healthy-icon.unhealthy {
   background: #F4454C;
@@ -128,12 +118,19 @@
 }
 
 .edit-wrap {
-  display: none;
+  visibility: hidden;
   width: 100%;
-  border-top: 1px dashed #DBDDE0;
+  height: 0;
+  opacity: 0;
+  transition: all 0.2s linear;
+  overflow: hidden;
 }
+
 .card-wrap:hover .edit-wrap {
-  display: block;
+  border-top: 1px dashed #DBDDE0;
+  opacity: 1;
+  visibility: visible;
+  height: 32px;
 }
 .edit-wrap > .ant-btn-text {
   width: 50%;

@@ -26,14 +26,16 @@ function App() {
     }
   ])
 
-  useMount(async() => {
-    const list = await storage.get<Card>(defaultList.map(item => item.id))
-    if(list.some(item => !item?.id)) {
-      return defaultList.map(item => {
-        storage.set(item.id, item)
+  useMount(() => {
+    storage.get<Card>(defaultList.map(item => item.id))
+      .then(list => {
+        if(list.some(item => !item?.id)) {
+          return defaultList.map(item => {
+            storage.set(item.id, item)
+          })
+        }
+        setList(list)
       })
-    }
-    setList(list)
   })
   useMount(() => storage.getExtendList().then(list => setCustomList(list)))
 
@@ -65,17 +67,14 @@ function App() {
           <Icon onClick={() => window.close()} type='close' style={{ color: '#C8CACD', cursor: 'pointer' }} />
         </div>
         <div className='content padding-20-24' id="item-container">
-          {/* <header>
-            文本功能
-          </header> */}
           <div className='default-wrap'>
-            {defaultList.map(card => <DefaultItem {...card} />)}
+            {defaultList.map(card => <DefaultItem {...card} key={card.id}/>)}
           </div>
           <header>
             {`自定义功能 (${customList.length})`}
           </header>
           <div className='custom-card-wrap'>
-            {customList.map(card => <CardItem {...card} onClick={setCurrent} setVisible={setVisible} />)}
+            {customList.map(card => <CardItem {...card} onClick={setCurrent} setVisible={setVisible} key={card.id}/>)}
           </div>
           <Footer onClick={() => {setVisible('update');setCurrent(null)} } />
         </div>
@@ -100,6 +99,7 @@ export default App
 export interface Card {
   id: string
   title: string
+  loading?: boolean
   enable?: boolean
   scripts?: string
   type?: 'extends' | 'default'

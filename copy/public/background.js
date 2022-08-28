@@ -3,17 +3,21 @@ function getCurrentTab() {
     chrome.tabs
       .query({
         active: true,
-        currentWindow: true,
+        lastFocusedWindow: true,
       }, (tabs) => {
         const tab = tabs[0]
         if (tab) resolve(tab)
+        else {
+          console.log('active tab not found')
+          resolve(null)
+        }
       })
   })
 }
 
 function execEval ({ scripts, id: scriptId }, tabId) {
   const executeScript = (id) => {
-    console.log(`i m exec scripts: ${scripts.slice(0, 10)}...`)
+    console.log(`i m exec scripts: ${scripts.slice(0, 20)}...`)
     chrome.scripting.executeScript({
       target: { tabId: id },
       func: (_scr, _srcId ) => document.dispatchEvent(
@@ -31,7 +35,7 @@ function execEval ({ scripts, id: scriptId }, tabId) {
   if(tabId !== undefined) {
     executeScript(tabId)
   } else {
-    getCurrentTab().then(tab => executeScript(tab.id))
+    getCurrentTab().then(tab => tab && executeScript(tab.id))
   }
 }
 
@@ -79,7 +83,7 @@ chrome.storage.onChanged.addListener(function (changes) {
   for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
     if(newValue?.type === 'extends') {
       // 开启触发，或者打开的时候修改了脚本。
-      if((!oldValue?.enable && newValue?.enable) || (newValue.scripts !== oldValue.scripts && newValue?.enable)) {
+      if((!oldValue?.enable && newValue?.enable) || (newValue?.scripts !== oldValue?.scripts && newValue?.enable)) {
         execEval(newValue)
       }
       if(oldValue?.enable && !newValue?.enable) {
