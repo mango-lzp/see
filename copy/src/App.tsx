@@ -66,11 +66,11 @@ function App() {
           <title><Icon type='click' style={{ marginRight: 8 }} />复制助手</title>
           <Icon onClick={() => window.close()} type='close' style={{ color: '#C8CACD', cursor: 'pointer' }} />
         </div>
-        <div style={{ paddingTop: 0 }} className='content padding-24' id="item-container">
+        <div style={{ paddingBottom: 24 }} className='content' id="item-container">
           <div className='default-wrap'>
             {defaultList.map(card => <DefaultItem {...card} key={card.id}/>)}
           </div>
-          <header>
+          <header className='padding-0-24'>
             {`自定义功能 (${customList.length})`}
           </header>
           <div className='custom-card-wrap'>
