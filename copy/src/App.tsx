@@ -62,11 +62,11 @@ function App() {
   return (
     <div className="App">
       <div className='wrap' style={{ display: visible !== 'normal' ? 'none' : undefined }} >
-        <div className='title-wrap padding-20-24' >
+        <div className='title-wrap padding-24' >
           <title><Icon type='click' style={{ marginRight: 8 }} />复制助手</title>
           <Icon onClick={() => window.close()} type='close' style={{ color: '#C8CACD', cursor: 'pointer' }} />
         </div>
-        <div className='content padding-20-24' id="item-container">
+        <div style={{ paddingTop: 0 }} className='content padding-24' id="item-container">
           <div className='default-wrap'>
             {defaultList.map(card => <DefaultItem {...card} key={card.id}/>)}
           </div>
