@@ -45,7 +45,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 12px;
+  padding: 0 12px;
+  height: 48px;
   font-size: 12px;
   background-color: rgb(244, 248, 251);
 }
