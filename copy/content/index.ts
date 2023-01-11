@@ -48,7 +48,11 @@ function clearDisable () {
 //   }
 // }
 
-window.onload = async () => {
+let isReady = false
+const onReady = async () => {
+  if(isReady) return
+  isReady = true
+  
   const proxy = new Proxy(options, {
     set(target, propKey, value, receiver) {
       if(propKey === 'clear-disabled' && value?.enable) {
@@ -138,27 +142,43 @@ window.onload = async () => {
     // @ts-ignore next-line
     chrome.runtime.sendMessage("runEnableScripts")
   })
-}
 
-// 收集报错信息，作为页面和插件的通信工具。
-window.addEventListener('message', event => {
-  const data = event.data
-  if(data.type === 'extension_error') {
-    // 报错展示策略，只展示当前页面的错误。
-    state.set(data.id, { log: data.log })
-    state.notify()
-  }
-})
-
-// @ts-ignore next-line
-chrome.runtime.onMessage.addListener(
-  (request, sender, sendResponse) => {
-    if (request?.type === "getPageData") {
-      sendResponse(state.get(request?.id))
-    }
-    if (request?.type === "clearLog") {
-      state.set(request?.id, { log: undefined })
+  // 收集报错信息，作为页面和插件的通信工具。
+  window.addEventListener('message', event => {
+    const data = event.data
+    if(data.type === 'extension_error') {
+      // 报错展示策略，只展示当前页面的错误。
+      state.set(data.id, { log: data.log })
       state.notify()
     }
-  }
-)
+  })
+
+  // @ts-ignore next-line
+  chrome.runtime.onMessage.addListener(
+    (request, sender, sendResponse) => {
+      if (request?.type === "getPageData") {
+        sendResponse(state.get(request?.id))
+      }
+      if (request?.type === "clearLog") {
+        state.set(request?.id, { log: undefined })
+        state.notify()
+      }
+    }
+  );
+}
+
+const ready = () => {
+  document.removeEventListener( "DOMContentLoaded", ready )
+	window.removeEventListener( "load", ready )
+  onReady()
+}
+// Catch cases where onReady() is called
+// after the browser event has already occurred.
+if(document.readyState !== 'loading') {
+  window.setTimeout(onReady)
+} else {
+  // Use the handy event callback
+  document.addEventListener('DOMContentLoaded', ready)
+  // A fallback to window.onload, that will always work
+  window.addEventListener('load', ready)
+}
