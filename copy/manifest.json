@@ -1,0 +1,32 @@
+{
+  "name": "copy",
+  "description" : "Hello world Extension",
+  "version": "1.0.1",
+  "manifest_version": 3,
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": "search.png"
+  },
+  "content_scripts": [
+    {
+      "js": ["content-scripts.js"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "background":{
+    "service_worker": "background.js"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "page-script.js"
+      ],
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ]
+    }
+  ],
+  "permissions":["activeTab", "storage", "scripting"],
+  "host_permissions": ["<all_urls>"]
+}
