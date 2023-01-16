@@ -10,7 +10,7 @@ const Switch: FC<SwitchProps> = props => {
   return (
     <AntSwitch
       size="small"
-      checkedChildren={<Icon type="checkmark" size={12} />}
+      checkedChildren={<Icon type='checkmark' size={12} />}
       unCheckedChildren={<Icon type="close" size={12} />}
       {...props}
     />

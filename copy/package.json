@@ -6,9 +6,9 @@
   "scripts": {
     "dev": "concurrently \"pnpm run content\" \"pnpm run build-ext\"",
     "content": "tsc --out ./dist/content-scripts.js --watch ./content/index.ts",
-    "build-ext": "tsc && vite build --watch",
+    "build-ext": "tsc && vite build --watch --mode dev",
     "build-content": "tsc --out ./dist/content-scripts.js ./content/index.ts",
-    "build": "concurrently \"pnpm run build-content\" \"tsc && vite build\"",
+    "build": "tsc && vite build && pnpm run build-content",
     "preview": "vite preview"
   },
   "dependencies": {

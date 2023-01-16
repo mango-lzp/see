@@ -1,9 +1,12 @@
 import { useEffect, useRef } from "react"
 
 type ICallback = () => any
-
-// 允许使用async fn
-export const useMount = (cb: ICallback) => useEffect(() => cb(), [])
+export const useMount = (cb: ICallback) => useEffect(() => {
+  const destroy = cb()
+  if(typeof destroy === 'function') {
+    return destroy
+  }
+}, [])
 
 
 export const useUpdateEffect = (cb: ICallback, deps: any[]) => {

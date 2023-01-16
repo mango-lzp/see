@@ -6,7 +6,7 @@ import { Icon } from './icon'
 
 export const DefaultItem = ({ title, enable, id }: Card) => {
 
-  return <div className='default-card-wrap'>
+  return <div className='default-card-wrap' >
     <div className="default-card">
       <div className='icon-wrap'>
         <Icon type='light' size={20} />

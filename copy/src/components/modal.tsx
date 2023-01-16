@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { Form, Input, Button, Switch } from '../antd'
 import { Icon } from './icon'
-import { genUuid, storage, classnames } from "../utils"
+import { genUuid, storage, classnames, page } from "../utils"
 import { useUpdateEffect } from '../hoooks'
 import './style.css'
 
@@ -44,6 +44,11 @@ export const NewModal = (props: IProps) => {
   const onOk = () => {
     form.validateFields().then(value => {
       const uuid = current?.id || genUuid()
+
+      if(current?.id && current?.scripts !== value?.scripts) {
+        page.clearLog(uuid)
+      }
+
       storage.set(uuid, {
         id: uuid,
         type: 'extends',
@@ -84,6 +89,15 @@ export const NewModal = (props: IProps) => {
 
 export const ErrorModal = (props: IProps) => {
   const { visible, setVisible, current } = props
+  const [log, setLog] = useState<string>()
+
+  useUpdateEffect(() => {
+    if(visible) {
+      page.getPageDataById(current.id).then(response => {
+        setLog(response?.log!)
+      })
+    }
+  }, [visible])
 
   return <Modal
     className='modal-error-log'
@@ -92,13 +106,11 @@ export const ErrorModal = (props: IProps) => {
     title='查看错误日志'
     footer={<></>}
   >
-      {current?.logs?.map(log => {
-        return <div className='log-wrap'>
-          <span>
-            {log}
-          </span>
-        </div>
-      })}
+    <div className='log-wrap'>
+      <span>
+        {log}
+      </span>
+    </div>
   </Modal>
 }
 

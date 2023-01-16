@@ -62,10 +62,53 @@ const classnames = (...nameList: any[]) => {
   })
   .filter(name => name)
   .join(' ')
-} 
+}
+
+function getCurrentTab() {
+  return new Promise<chrome.tabs.Tab | null>((resolve) => {
+    chrome.tabs
+      .query({
+        active: true,
+        lastFocusedWindow: true,
+      }, (tabs) => {
+        const tab = tabs[0]
+        if (tab) resolve(tab)
+        else {
+          console.trace('active tab not found')
+          resolve(null)
+        }
+      })
+  })
+}
+
+class PageDataController {
+  getPageDataById = (id: string) => {
+    return new Promise<{ log?: string, loading?: boolean } | null>(resolve => {
+      getCurrentTab().then(tab => {
+        if(tab) {
+          chrome.tabs.sendMessage(tab?.id!, { type: 'getPageData', id }, (response) => {
+            resolve(response)
+          })
+        } else {
+          resolve(null)
+        }
+      })
+    })
+  }
+
+  clearLog = (id: string) => {
+    getCurrentTab().then(tab => {
+      console.log('clear log', id)
+      chrome.tabs.sendMessage(tab?.id!, { type: 'clearLog', id })
+    })
+  }
+}
+
+const page = new PageDataController()
 
 export {
   storage,
   genUuid,
-  classnames
+  classnames,
+  page
 }

@@ -1,7 +1,7 @@
 {
-  "name": "copy-text",
+  "name": "copy",
   "description" : "Hello world Extension",
-  "version": "1.0",
+  "version": "1.0.1",
   "manifest_version": 3,
   "action": {
     "default_popup": "index.html",
@@ -27,5 +27,6 @@
       ]
     }
   ],
-  "permissions":["activeTab", "storage", "scripting"]
+  "permissions":["activeTab", "storage", "scripting"],
+  "host_permissions": ["<all_urls>"]
 }
