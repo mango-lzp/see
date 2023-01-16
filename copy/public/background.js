@@ -40,16 +40,14 @@ function execEval ({ scripts, id: scriptId }, tabId) {
 }
 
 // 页面load完成时需要触发
-function RunAllEnableCustomScripts() {
+function RunAllEnableCustomScripts(tabId) {
   chrome.storage.sync.get((data) => {
-    getCurrentTab().then((tab) => {
-      Object.values(data || {})
-      .filter(card => card.type === 'extends')
-      .map(card => {
-        if(card.enable) {
-          execEval({ scripts: card.scripts, id: card.id }, tab.id)
-        }
-      })
+    Object.values(data || {})
+    .filter(card => card.type === 'extends')
+    .map(card => {
+      if(card.enable) {
+        execEval({ scripts: card.scripts, id: card.id }, tabId)
+      }
     })
   })
 }
@@ -57,7 +55,7 @@ function RunAllEnableCustomScripts() {
 chrome.runtime.onMessage.addListener(
   (request, sender, sendResponse) => {
     if (request === "runEnableScripts") {
-      RunAllEnableCustomScripts()
+      RunAllEnableCustomScripts(sender.tab.id)
     }
 
     if(request?.type === 'extension_error') {
