@@ -73,7 +73,7 @@ function App() {
           <header className='padding-0-24'>
             {`自定义功能 (${customList.length})`}
           </header>
-          <div className='custom-card-wrap'>
+          <div className='custom-card-wrap' style={{ maxHeight: customList.length * 52 }}>
             {customList.map(card => <CardItem {...card} onClick={setCurrent} setVisible={setVisible} key={card.id}/>)}
           </div>
           <Footer onClick={() => {setVisible('update');setCurrent(null)} } />

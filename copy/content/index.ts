@@ -16,7 +16,7 @@ class StateController {
 
   notify (type = 'error_log') {
     // @ts-ignore next-line
-    chrome.runtime.sendMessage({ type, state: state.data })
+    chrome.runtime.sendMessage({ type, state: this.data })
   }
 }
 const state = new StateController()
