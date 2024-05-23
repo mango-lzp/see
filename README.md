@@ -1,5 +1,5 @@
-# gg-extension
-google-extension
+# SEE
+Scripts Execute Extension
 
 使用方法：  
 1. [历史版本](https://github.com/mango-lzp/gg-extension/releases) 选择最新的压缩包下载即可。
