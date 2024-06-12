@@ -2,7 +2,7 @@
 document.addEventListener('message', (event) => {
   const { scripts, id } = event.detail
   try{
-    eval(`(() => {${scripts}})()`)
+    eval(`(async () => {${scripts}})()`)
   } catch (e) {
     window.postMessage({
       type: 'extension_error',

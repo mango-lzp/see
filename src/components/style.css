@@ -116,6 +116,27 @@
   font-size: 12px;
 }
 
+.width0 {
+  width: 0;
+}
+
+.hover-visible {
+  visibility: hidden;
+  opacity: 0;
+  transition: all 0.2s linear;
+}
+
+.hover-visible-wrap:hover .hover-visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.hover-visible-wrap:hover .hover-visible-delete {
+  width: 16px;
+  margin-right: -20px;
+  margin-left: 4px;
+}
+
 .edit-wrap {
   visibility: hidden;
   width: 100%;

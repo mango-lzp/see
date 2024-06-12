@@ -1,8 +1,12 @@
 const options = {}
 
-// 页面状态数据保存
+// Tab 页面状态数据保存
 class StateController {
-  data = {}
+  data = {
+    info: {
+      url: window.location.href
+    }
+  }
 
   set (id, obj) {
     if(!this.data[id]) this.data[id] = {}
@@ -62,13 +66,34 @@ const onReady = async () => {
     }
   })
 
+  function isPass (url, config) {
+    let pass = false
+    const ruleList = config?.ruleList || []
+    const matchList = ruleList.filter(r => url.includes(r.name))
+    let mostMatch = matchList[0]
+    matchList.forEach(m => {
+      if(m.name.length > mostMatch.name.length) {
+        mostMatch = m
+      }
+    })
+    if(mostMatch) {
+      if(mostMatch.enable) {
+        pass = true
+      }
+    } else if(config?.enable) {
+      pass = true
+    }
+    console.log('mostMatch', mostMatch)
+    return pass
+  }
+
   //数据初始化
   await Promise.all(
     ['clear-disabled', 'clear-text']
     .map(key => new Promise(r => {
         // @ts-ignore next-line
         chrome.storage.sync.get(key, data => {
-          proxy[key] = data[key]
+          proxy[key] = isPass(state.data.info.url,data[key])
           r(null)
         })
       })
@@ -79,7 +104,7 @@ const onReady = async () => {
   // @ts-ignore next-line
   chrome.storage.onChanged.addListener(function (changes) {
     for (let [key, { oldValue, newValue }] of Object.entries(changes) as any) {
-      proxy[key] = newValue
+      proxy[key] = isPass(state.data.info.url, newValue)
     }
   })
 
@@ -156,6 +181,10 @@ const onReady = async () => {
   // @ts-ignore next-line
   chrome.runtime.onMessage.addListener(
     (request, sender, sendResponse) => {
+      if (request?.type === "setPageData") {
+        state.set(request?.id, request?.data)
+        sendResponse({ success: true })
+      }
       if (request?.type === "getPageData") {
         sendResponse(state.get(request?.id))
       }

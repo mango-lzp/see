@@ -32,7 +32,7 @@ class ChromeStorage {
 
   set = <T extends PlainObject>(key: string, data: T) => new Promise<T>(resolve => {
     this.get(key).then(old => {
-      const newValue = Object.assign({ createDate: new Date().getTime() }, old, data)
+      const newValue = Object.assign({ createDate: Date.now() }, old, data, { lastModify: Date.now() })
 
       if(old?.logs?.length && (newValue.scripts !== old?.scripts || newValue.destroy !== old?.destroy)) {
         (newValue as PlainObject)['logs'] = []
@@ -83,10 +83,24 @@ function getCurrentTab() {
 
 class PageDataController {
   getPageDataById = (id: string) => {
-    return new Promise<{ log?: string, loading?: boolean } | null>(resolve => {
+    return new Promise<{ log?: string, loading?: boolean, [key: string]: any } | null>(resolve => {
       getCurrentTab().then(tab => {
         if(tab) {
           chrome.tabs.sendMessage(tab?.id!, { type: 'getPageData', id }, (response) => {
+            resolve(response)
+          })
+        } else {
+          resolve(null)
+        }
+      })
+    })
+  }
+
+  setPageDataById = (id: string, data) => {
+    return new Promise<{ log?: string, loading?: boolean } | null>(resolve => {
+      getCurrentTab().then(tab => {
+        if(tab) {
+          chrome.tabs.sendMessage(tab?.id!, { type: 'setPageData', id, data }, (response) => {
             resolve(response)
           })
         } else {
@@ -106,9 +120,36 @@ class PageDataController {
 
 const page = new PageDataController()
 
+function getMatchRule (url, ruleList) {
+  const matchList = ruleList.filter(r => url?.includes(r.name))
+  let mostMatch = matchList[0]
+  matchList.forEach(m => {
+    if(m.name.length > mostMatch.name.length) {
+      mostMatch = m
+    }
+  })
+  return mostMatch
+}
+
+function isPass (url, config) {
+  let pass = false
+  const ruleList = config?.ruleList || []
+  const mostMatch = getMatchRule(url, ruleList)
+  if(mostMatch) {
+    if(mostMatch.enable) {
+      pass = true
+    }
+  } else if(config?.enable) {
+    pass = true
+  }
+  return pass
+}
+
 export {
   storage,
   genUuid,
   classnames,
-  page
+  page,
+  isPass,
+  getMatchRule
 }

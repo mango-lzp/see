@@ -1,16 +1,17 @@
 import { useState, useEffect, useCallback } from 'react'
 import { DefaultItem, CardItem, Icon } from './components'
-import { NewModal, ErrorModal } from './components/modal'
+import { NewModal, ErrorModal, RuleListModal } from './components/modal'
 import { useMount } from './hoooks'
 import { storage } from './utils'
 import './style.css'
 import './index.css'
 import { Footer } from './components/custom-footer'
+import { Rule } from './components/rule'
 
 type chromeStorageListener = Parameters<chrome.storage.StorageChangedEvent['addListener']>[0]
 
 function App() {
-  const [visible, setVisible] = useState<'normal' | 'update' | 'error'>('normal')
+  const [visible, setVisible] = useState<'normal' | 'update' | 'error' | 'rule'>('normal')
   const [customList, setCustomList] = useState<Card[]>([])
   const [current, setCurrent] = useState<Card | null>(null)
   const [defaultList, setList] = useState<Card[]>([
@@ -50,8 +51,14 @@ function App() {
           setList(list)
         }
 
+        // 扩展修改或删除
         if(newValue?.type === 'extends' || !newValue) {
           storage.getExtendList().then(list => setCustomList(list))
+        }
+
+        // 更新 current
+        if(newValue) {
+          setCurrent(newValue)
         }
       }
     }
@@ -63,18 +70,18 @@ function App() {
     <div className="App">
       <div className='wrap' style={{ display: visible !== 'normal' ? 'none' : undefined }} >
         <div className='title-wrap padding-24' >
-          <title><Icon type='click' style={{ marginRight: 8 }} />复制助手</title>
+          <title><Icon type='click' style={{ marginRight: 8 }} />Script Executor</title>
           <Icon onClick={() => window.close()} type='close' style={{ color: '#C8CACD', cursor: 'pointer' }} />
         </div>
         <div style={{ paddingBottom: 24 }} className='content' id="item-container">
           <div className='default-wrap'>
-            {defaultList.map(card => <DefaultItem {...card} key={card.id}/>)}
+            {defaultList.map(card => <DefaultItem onClick={() => setCurrent(card)} setVisible={setVisible} current={card} key={card.id}/>)}
           </div>
           <header className='padding-0-24'>
             {`自定义功能 (${customList.length})`}
           </header>
           <div className='custom-card-wrap' style={{ maxHeight: customList.length * 52 }}>
-            {customList.map(card => <CardItem {...card} onClick={setCurrent} setVisible={setVisible} key={card.id}/>)}
+            {customList.map(card => <CardItem current={card} onClick={() => setCurrent(card)} setVisible={setVisible} key={card.id}/>)}
           </div>
           <Footer onClick={() => {setVisible('update');setCurrent(null)} } />
         </div>
@@ -89,6 +96,11 @@ function App() {
         setVisible={(_visible) => _visible ? setVisible('error') : setVisible('normal')}
         current={current}
       />
+      <RuleListModal
+        visible={visible === 'rule'}
+        setVisible={(_visible) => _visible ? setVisible('rule') : setVisible('normal')}
+        current={current}
+      />
     </div>
   )
 }
@@ -100,6 +112,7 @@ export interface Card {
   id: string
   title: string
   loading?: boolean
+  ruleList?: Rule[]
   enable?: boolean
   scripts?: string
   type?: 'extends' | 'default'
