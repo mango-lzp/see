@@ -30,3 +30,7 @@ body::-webkit-scrollbar-thumb, div::-webkit-scrollbar-thumb, section::-webkit-sc
   border-radius: 4px;
   background: #DBDDE0;
 }
+
+.cursor-pointer {
+  cursor: pointer;
+}
