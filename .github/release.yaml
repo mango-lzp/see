@@ -1,0 +1,36 @@
+name: github-actions
+run-name: ${{ github.actor }} GitHub Actions
+on:
+  push:
+    branches:
+      - 'main'
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout mian
+      - uses: actions/checkout@main
+        with:
+          node-version: '20'
+      - run: |
+        npm i
+        npm run build
+
+      - name: clean and move
+        run: bash ./clean.bash
+
+      - name: Bump version and push tag
+        id: bump_version
+        uses: anothrNick/github-tag-action@v1.36.0
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ steps.bump_version.outputs.new_tag }}
+          release_name: Release ${{ steps.bump_version.outputs.new_tag }}
+          body: |
+            Release notes here...
+          draft: false
+          prerelease: false
