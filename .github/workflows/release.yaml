@@ -13,7 +13,7 @@ jobs:
         with:
           node-version: '20'
       - run: |
-        npm i
+        npm install
         npm run build
 
       - name: clean and move
