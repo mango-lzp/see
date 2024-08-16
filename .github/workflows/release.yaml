@@ -24,6 +24,7 @@ jobs:
         uses: anothrNick/github-tag-action@v1.36.0
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
