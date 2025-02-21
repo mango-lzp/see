@@ -1,9 +1,9 @@
-.padding-24 {
-  padding: 24px;
+.padding-16 {
+  padding: 16px;
 }
 
-.padding-0-24 {
-  padding: 0 24px;
+.padding-0-16 {
+  padding: 0 16px;
 }
 
 .float-left {
@@ -19,8 +19,8 @@
   display: flex;
   width: 100%;
   justify-content: space-between;
-  padding: 0 24px;
-  margin-bottom: 24px;
+  padding: 0 16px;
+  margin-bottom: 16px;
 }
 
 .wrap {
@@ -78,5 +78,5 @@
   overflow-y: scroll;
   /* 滚动条带6px的宽度，需要预留出来 */
   /* margin-right: 12px; */
-  padding: 0 18px 4px 24px;
+  padding: 0 10px 4px 16px;
 }

@@ -69,18 +69,18 @@ function App() {
   return (
     <div className="App">
       <div className='wrap' style={{ display: visible !== 'normal' ? 'none' : undefined }} >
-        <div className='title-wrap padding-24' >
+        <div className='title-wrap padding-16' >
           <title><Icon type='click' style={{ marginRight: 8 }} />Script Executor</title>
           <Icon onClick={() => window.close()} type='close' style={{ color: '#C8CACD', cursor: 'pointer' }} />
         </div>
-        <div style={{ paddingBottom: 24 }} className='content' id="item-container">
+        <div style={{ paddingBottom: 16 }} className='content' id="item-container">
           <div className='default-wrap'>
             {defaultList.map(card => <DefaultItem onClick={() => setCurrent(card)} setVisible={setVisible} current={card} key={card.id}/>)}
           </div>
-          <header className='padding-0-24'>
+          <header className='padding-0-16'>
             {`自定义功能 (${customList.length})`}
           </header>
-          <div className='custom-card-wrap' style={{ maxHeight: customList.length * 52 }}>
+          <div className='custom-card-wrap'>
             {customList.map(card => <CardItem current={card} onClick={() => setCurrent(card)} setVisible={setVisible} key={card.id}/>)}
           </div>
           <Footer onClick={() => {setVisible('update');setCurrent(null)} } />

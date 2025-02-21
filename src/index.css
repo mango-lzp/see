@@ -18,7 +18,7 @@ html,body {
 body {
   margin: 0;
   place-items: center;
-  min-width: 320px;
+  min-width: 300px;
   /* popup 默认限制，超过600px会自动出现滚动条 */
   max-height: 600px;
 }
