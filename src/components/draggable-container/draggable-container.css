@@ -1,0 +1,15 @@
+.draggable-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.draggable-item {
+  cursor: move;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.draggable-item.dragging {
+  opacity: 0.5;
+  transform: scale(0.95);
+}

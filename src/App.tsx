@@ -7,9 +7,11 @@ import './style.css'
 import './index.css'
 import { Footer } from './components/custom-footer'
 import { Rule } from './components/rule'
+import DraggableContainer from './components/draggable-container'
 
 type chromeStorageListener = Parameters<chrome.storage.StorageChangedEvent['addListener']>[0]
 
+// 在 App 组件中添加处理排序变化的函数
 function App() {
   const [visible, setVisible] = useState<'normal' | 'update' | 'error' | 'rule'>('normal')
   const [customList, setCustomList] = useState<Card[]>([])
@@ -66,6 +68,15 @@ function App() {
     return () => chrome.storage.onChanged.removeListener(listener)
   }, [defaultList])
 
+  const handleOrderChange = (newOrder: string[]) => {
+    // 根据新的顺序重新排列 customList
+    const orderedList = newOrder.map(id => 
+      customList.find(card => card.id === id)
+    ).filter(Boolean) as Card[];
+    
+    setCustomList(orderedList);
+  };
+
   return (
     <div className="App">
       <div className='wrap' style={{ display: visible !== 'normal' ? 'none' : undefined }} >
@@ -80,9 +91,22 @@ function App() {
           <header className='padding-0-16'>
             {`自定义功能 (${customList.length})`}
           </header>
-          <div className='custom-card-wrap'>
-            {customList.map(card => <CardItem current={card} onClick={() => setCurrent(card)} setVisible={setVisible} key={card.id}/>)}
-          </div>
+          
+          {/* 使用改进后的拖拽容器 */}
+          <DraggableContainer 
+            onOrderChange={handleOrderChange}
+            className="custom-card-wrap"
+          >
+            {customList.map(card => 
+              <CardItem 
+                current={card} 
+                onClick={() => setCurrent(card)} 
+                setVisible={setVisible} 
+                key={card.id}
+              />
+            )}
+          </DraggableContainer>
+          
           <Footer onClick={() => {setVisible('update');setCurrent(null)} } />
         </div>
       </div>

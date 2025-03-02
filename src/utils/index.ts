@@ -27,9 +27,28 @@ class ChromeStorage {
       }
     }
   )
-
-  getExtendList = () => this.get().then(data => Object.values(data).filter((item: any) => item.type === 'extends'))
-
+  
+  getExtendList = () => this.get().then(data => {
+    const extendsList = Object.values(data).filter((item: any) => item.type === 'extends');
+    // 优先按照自定义排序字段排序，如果没有则按创建时间排序
+    return extendsList.sort((a: any, b: any) => {
+      // 如果两个项目都有 order 字段，按 order 排序
+      if (a.order !== undefined && b.order !== undefined) {
+        return a.order - b.order;
+      }
+      // 如果只有 a 有 order 字段，a 排在前面
+      if (a.order !== undefined) {
+        return -1;
+      }
+      // 如果只有 b 有 order 字段，b 排在前面
+      if (b.order !== undefined) {
+        return 1;
+      }
+      // 都没有 order 字段，按创建时间排序
+      return (b.createDate || 0) - (a.createDate || 0);
+    });
+  })
+  
   set = <T extends PlainObject>(key: string, data: T) => new Promise<T>(resolve => {
     this.get(key).then(old => {
       const newValue = Object.assign({ createDate: Date.now() }, old, data, { lastModify: Date.now() })
