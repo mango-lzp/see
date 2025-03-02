@@ -28,26 +28,39 @@ class ChromeStorage {
     }
   )
   
-  getExtendList = () => this.get().then(data => {
-    const extendsList = Object.values(data).filter((item: any) => item.type === 'extends');
-    // 优先按照自定义排序字段排序，如果没有则按创建时间排序
-    return extendsList.sort((a: any, b: any) => {
-      // 如果两个项目都有 order 字段，按 order 排序
-      if (a.order !== undefined && b.order !== undefined) {
-        return a.order - b.order;
-      }
-      // 如果只有 a 有 order 字段，a 排在前面
-      if (a.order !== undefined) {
-        return -1;
-      }
-      // 如果只有 b 有 order 字段，b 排在前面
-      if (b.order !== undefined) {
-        return 1;
-      }
-      // 都没有 order 字段，按创建时间排序
-      return (b.createDate || 0) - (a.createDate || 0);
-    });
-  })
+  getExtendList = async () => {
+      const data = await this.get();
+      const extendsList = Object.values(data).filter((item: any) => item.type === 'extends');
+      
+      // 获取当前页面信息
+      const pageInfo = await page.getPageDataById('info');
+      const currentUrl = pageInfo?.url;
+      
+      // 排序逻辑：1.实际启用状态优先 2.自定义排序 3.创建时间
+      return extendsList.sort((a: any, b: any) => {
+        // 首先按实际启用状态排序
+        const aEnabled = isPass(currentUrl, a);
+        const bEnabled = isPass(currentUrl, b);
+        
+        if (aEnabled && !bEnabled) return -1;
+        if (!aEnabled && bEnabled) return 1;
+        
+        // 如果启用状态相同，再按照自定义排序字段排序
+        if (a.order !== undefined && b.order !== undefined) {
+          return a.order - b.order;
+        }
+        // 如果只有 a 有 order 字段，a 排在前面
+        if (a.order !== undefined) {
+          return -1;
+        }
+        // 如果只有 b 有 order 字段，b 排在前面
+        if (b.order !== undefined) {
+          return 1;
+        }
+        // 都没有 order 字段，按创建时间排序
+        return (b.createDate || 0) - (a.createDate || 0);
+      });
+    }
   
   set = <T extends PlainObject>(key: string, data: T) => new Promise<T>(resolve => {
     this.get(key).then(old => {
